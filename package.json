@@ -1,0 +1,33 @@
+{
+  "name": "coordinator-service",
+  "version": "1.0.0",
+  "description": "Coordinator service to work with ContentPrinter",
+  "scripts": {
+    "start": "npm run serve",
+    "build": "npm run build-ts && npm run tslint",
+    "serve": "node dist/server.js",
+    "watch-node": "nodemon dist/server.js",
+    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
+    "test": "jest --forceExit --coverage --verbose --detectOpenHandles",
+    "watch-test": "npm run test -- --watchAll",
+    "build-ts": "tsc",
+    "watch-ts": "tsc -w",
+    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "debug": "npm run build && npm run watch-debug",
+    "serve-debug": "nodemon --inspect dist/server.js",
+    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
+  },
+  "author": "RanKey",
+  "license": "ISC",
+  "dependencies": {
+    "coordinator-service": "file:",
+    "dotenv": "^16.4.7",
+    "nats": "^2.29.1",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "@types/pg": "^8.11.10",
+    "reflect-metadata": "^0.2.2"
+  }
+}
