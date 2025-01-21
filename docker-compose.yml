@@ -1,0 +1,5 @@
+services:
+  coordinator:
+    build: .
+    env_file:
+      - ./.env
