@@ -1,6 +1,6 @@
-import { connect, NatsConnection, StringCodec } from "nats";
-import pool from "./db";
-import { updateAudioPath, updateMediaPath, areAudioAndMediaPathsUpdated, getIdAndPaths } from "./services/tts_video";
+import { connect, NatsConnection, StringCodec } from 'nats';
+import pool from './db';
+import { updateAudioPath, updateMediaPath, areAudioAndMediaPathsUpdated, getIdAndPaths } from './services/tts_video';
 
 export default class App {
 
@@ -24,19 +24,19 @@ export default class App {
     }
 
     private async jobCompletedHandler(instance: any, proccedure: any) {
-        let subj = instance.getSubject();
+        const subj = instance.getSubject();
         console.log(`Listening for ${subj}`);
 
         for await (const msg of instance) {
             const data = JSON.parse(this.sc.decode(msg.data));
-            console.log(`[${subj}] #${instance.getProcessed()} - ${msg.subject} ${msg.data ? " " + JSON.stringify(data) : ""}`);
+            console.log(`[${subj}] #${instance.getProcessed()} - ${msg.subject} ${msg.data ? ' ' + JSON.stringify(data) : ''}`);
             await proccedure(pool, data);
             const pathsUpdated = await areAudioAndMediaPathsUpdated(pool, data.id);
             if (pathsUpdated) {
                 const videoData = await getIdAndPaths(pool, data.id);
                 if (videoData) {
                     console.log(`Publishing video created: ${JSON.stringify(videoData)}`);
-                    this.nc.publish("job.video.created", this.sc.encode(JSON.stringify(videoData)));
+                    this.nc.publish('job.video.created', this.sc.encode(JSON.stringify(videoData)));
                     console.log(`Video created published: ${JSON.stringify(videoData)}`);
                 }
             }

@@ -14,14 +14,13 @@
                 "src/types/*"
             ]
         },
-        "types": [
-            "reflect-metadata"
-        ],
+        "types": ["node"],
         "typeRoots": [
             "node_modules/@types"
         ],
         "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
+        "emitDecoratorMetadata": true,
+        "skipLibCheck": true
     },
     "include": [
         "src/**/*",

@@ -38,7 +38,7 @@ export async function updateMediaPath(pool: any, data: any) {
 
     try {
       const exists = verifyIdExists(pool, data.id);
-      if (!exists) {      
+      if (!exists) {
         console.log(`El ID ${data.id} no existe en la base de datos.`);
         return;
       }
@@ -58,7 +58,7 @@ export async function areAudioAndMediaPathsUpdated(pool: any, id: string) {
 
     try {
       const exists = verifyIdExists(pool, id);
-      if (!exists) {      
+      if (!exists) {
         console.log(`El ID ${id} no existe en la base de datos.`);
         return false;
       }
@@ -90,10 +90,10 @@ export async function getIdAndPaths(pool: any, id: string) {
         const { id, audio_path, media_path } = result.rows[0];
         return { id, audio_path, media_path };
       }
-      return null;
+      return undefined;
     } catch (error) {
       console.error('Error al obtener los paths:', error);
-      return null;
+      return undefined;
     } finally {
       client.release();
     }

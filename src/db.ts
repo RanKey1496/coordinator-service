@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { Pool } from "pg";
+import { Pool } from 'pg';
 
 dotenv.config({ path: '.env'});
 
