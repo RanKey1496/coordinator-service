@@ -1,6 +1,6 @@
 import { connect, NatsConnection, StringCodec } from 'nats';
 import pool from './db';
-import { updateAudioPath, updateMediaPath, areAudioAndMediaPathsUpdated, getIdAndPaths } from './services/tts_video';
+import { updateAudioPath, updateMediaPath, areAudioAndMediaPathsUpdated, getIdAndPaths } from './services/video';
 
 export default class App {
 
