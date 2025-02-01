@@ -53,6 +53,26 @@ export async function updateMediaPath(pool: any, data: any) {
     }
 }
 
+export async function updateResultPath(pool: any, data: any) {
+  const client = await pool.connect();
+
+  try {
+    const exists = verifyIdExists(pool, data.id);
+    if (!exists) {
+      console.log(`El ID ${data.id} no existe en la base de datos.`);
+      return;
+    }
+
+    const query = 'UPDATE videos SET result_path = $2 WHERE id = $1';
+    await client.query(query, [data.id, data.media]);
+    console.log(`Result path actualizado para el ID ${data.id}.`);
+  } catch (error) {
+    console.error('Error al actualizar el result path:', error);
+  } finally {
+    client.release();
+  }
+}
+
 export async function areAudioAndMediaPathsUpdated(pool: any, id: string) {
     const client = await pool.connect();
 
@@ -97,4 +117,24 @@ export async function getIdAndPaths(pool: any, id: string) {
     } finally {
       client.release();
     }
+}
+
+export async function getResultById(pool: any, id: string) {
+  const client = await pool.connect();
+
+  try {
+    const query = 'SELECT id, result_path FROM videos WHERE id = $1';
+    const result = await client.query(query, [id]);
+
+    if (result.rows.length > 0) {
+      const { id, result_path } = result.rows[0];
+      return { id, result_path };
+    }
+    return undefined;
+  } catch (error) {
+    console.error('Error al obtener los paths:', error);
+    return undefined;
+  } finally {
+    client.release();
+  }
 }

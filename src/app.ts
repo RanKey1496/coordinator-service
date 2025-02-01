@@ -1,6 +1,6 @@
 import { connect, NatsConnection, StringCodec } from 'nats';
 import pool from './db';
-import { updateAudioPath, updateMediaPath, areAudioAndMediaPathsUpdated, getIdAndPaths } from './services/video';
+import { updateAudioPath, updateMediaPath, updateResultPath, areAudioAndMediaPathsUpdated, getIdAndPaths, getResultById } from './services/video';
 
 export default class App {
 
@@ -43,6 +43,19 @@ export default class App {
         }
     }
 
+    private async jobFinishedHandler(instance: any, proccedure: any) {
+        const subj = instance.getSubject();
+        console.log(`Listening for ${subj}`);
+
+        for await (const msg of instance) {
+            const data = JSON.parse(this.sc.decode(msg.data));
+            console.log(`[${subj}] #${instance.getProcessed()} - ${msg.subject} ${msg.data ? ' ' + JSON.stringify(data) : ''}`);
+            await proccedure(pool, data);
+            const resultData = await getResultById(pool, data.id);
+            await this.nc.publish('job.video.result', this.sc.encode(JSON.stringify(resultData)));
+        }
+    }
+
     private async jobTTSCompletedHandler(instance: any) {
         await this.jobCompletedHandler(instance, updateAudioPath);
     }
@@ -51,13 +64,19 @@ export default class App {
         await this.jobCompletedHandler(instance, updateMediaPath);
     }
 
+    private async jobVideoFinishedHandler(instance: any) {
+        await this.jobFinishedHandler(instance, updateResultPath);
+    }
+
     public async start() {
         await this.init();
         const ttsCompleted = this.nc.subscribe('job.tts.completed');
         const mediaCompleted = this.nc.subscribe('job.media.completed');
+        const videoFinished = this.nc.subscribe('job.video.finished');
 
         this.jobTTSCompletedHandler(ttsCompleted);
         this.jobMediaCompletedHandler(mediaCompleted);
+        this.jobVideoFinishedHandler(videoFinished);
     }
 
 }
