@@ -64,7 +64,7 @@ export async function updateResultPath(pool: any, data: any) {
     }
 
     const query = 'UPDATE videos SET video_path = $2 WHERE id = $1';
-    await client.query(query, [data.id, data.media]);
+    await client.query(query, [data.id, data.result]);
     console.log(`Result path actualizado para el ID ${data.id}.`);
   } catch (error) {
     console.error('Error al actualizar el result path:', error);
