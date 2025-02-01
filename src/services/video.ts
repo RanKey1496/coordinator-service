@@ -63,7 +63,7 @@ export async function updateResultPath(pool: any, data: any) {
       return;
     }
 
-    const query = 'UPDATE videos SET result_path = $2 WHERE id = $1';
+    const query = 'UPDATE videos SET video_path = $2 WHERE id = $1';
     await client.query(query, [data.id, data.media]);
     console.log(`Result path actualizado para el ID ${data.id}.`);
   } catch (error) {
@@ -123,12 +123,12 @@ export async function getResultById(pool: any, id: string) {
   const client = await pool.connect();
 
   try {
-    const query = 'SELECT id, result_path FROM videos WHERE id = $1';
+    const query = 'SELECT id, video_path FROM videos WHERE id = $1';
     const result = await client.query(query, [id]);
 
     if (result.rows.length > 0) {
-      const { id, result_path } = result.rows[0];
-      return { id, result_path };
+      const { id, video_path } = result.rows[0];
+      return { id, video_path };
     }
     return undefined;
   } catch (error) {
