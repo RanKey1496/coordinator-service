@@ -38,7 +38,7 @@ export default class App {
                     console.log(`Publishing video created: ${JSON.stringify(videoData)}`);
                     this.nc.publish('job.video.created', this.sc.encode(JSON.stringify(videoData)));
 
-                    const videoStatus = { id: data.id, status: 'Procesando' };
+                    const videoStatus = { id: Number(data.id), status: 'Procesando' };
                     this.nc.publish('job.video.result', this.sc.encode(JSON.stringify(videoStatus)));
                     console.log(`Video created published: ${JSON.stringify(videoData)}`);
                 }
@@ -54,7 +54,7 @@ export default class App {
             const data = JSON.parse(this.sc.decode(msg.data));
             console.log(`[${subj}] #${instance.getProcessed()} - ${msg.subject} ${msg.data ? ' ' + JSON.stringify(data) : ''}`);
             await proccedure(pool, data);
-            const videoStatus = { id: data.id, status: 'Completado' };
+            const videoStatus = { id: Number(data.id), status: 'Completado' };
             await this.nc.publish('job.video.result', this.sc.encode(JSON.stringify(videoStatus)));
         }
     }
